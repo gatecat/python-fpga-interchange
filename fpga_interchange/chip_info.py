@@ -61,12 +61,19 @@ class BelInfo():
         self.non_inverting_pin = -1
         self.inverting_pin = -1
 
+    def finalise(self, bba):
+        # Sort BEL ports for fast binary lookup
+        self.ports, self.types, self.wires = (list(t) for t in zip(*sorted(
+            zip(self.ports, self.types, self.wires),
+            key=lambda x: bba.const_ids.get_index(x[0]))))
+
     def field_label(self, label_prefix, field):
         prefix = '{}.site{}.{}.{}'.format(label_prefix, self.site, self.name,
                                           field)
         return prefix
 
     def append_children_bba(self, bba, label_prefix):
+        self.finalise(bba)
         assert len(self.ports) == len(self.types)
         assert len(self.ports) == len(self.wires)
 
@@ -1136,7 +1143,7 @@ class ChipInfo():
         self.generator = ''
 
         # Note: Increment by 1 this whenever schema or the nextpnr chip database structure changes.
-        self.version = 11
+        self.version = 12
         self.width = 0
         self.height = 0
 
