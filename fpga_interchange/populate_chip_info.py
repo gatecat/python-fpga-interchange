@@ -228,7 +228,8 @@ class FlattenedTileType():
         for idx, pip in enumerate(tile_type.pips):
             is_pseudo_cell = pip.which() == 'pseudoCells'
             if is_pseudo_cell and any(
-                (device.strs[pcell.bel] in disabled_routethrus)
+                (device.strs[pcell.bel] in disabled_routethrus or \
+                    f"{self.tile_type_name}/{device.strs[pcell.bel]}" in disabled_routethrus)
                     for pcell in pip.pseudoCells):
                 # Skip pseudo pips through disabled cells
                 continue
